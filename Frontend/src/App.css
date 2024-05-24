@@ -1,0 +1,10 @@
+h1,h2 {
+  margin: 0px;
+}
+
+.task-manager-heading {
+  background-color: rgb(0, 191, 255);
+  color: whitesmoke;
+  padding: 5px 10px;
+  text-align: center;
+}
