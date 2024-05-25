@@ -8,10 +8,18 @@ const User = require('./models/User');
 const Task = require('./models/Task');
 require('dotenv').config();
 
+MONGODB_URI='mongodb+srv://madhugoud:Madhu162@mern.ogz9oev.mongodb.net/'
+JWT_SECRET='Rj2S?RVe9[]8-dCS6A**&b5Tsg$gwbg~Bd{*QTK'
+
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+app.use(cors({
+  origin: ['https://task-manager-anxu.vercel.app'], // Specify the allowed origin (replace example.com with your actual domain)
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Specify the allowed HTTP methods
+  credentials: true, // Allow sending cookies with the requests
+}));
 app.use(bodyParser.json());
 
 mongoose.connect(process.env.MONGODB_URI, {
