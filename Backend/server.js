@@ -4,8 +4,8 @@ const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
-const User = require('./Models/User');
-const Task = require('./Models/Task');
+const User = require('./models/User');
+const Task = require('./models/Task');
 require('dotenv').config();
 
 const app = express();
@@ -49,6 +49,7 @@ app.post('/register', async (req, res) => {
   }
 });
 
+// Login route
 app.post('/login', async (req, res) => {
   const { name, password } = req.body;
 
@@ -75,6 +76,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// Middleware to verify token
 function verifyToken(req, res, next) {
   const token = req.headers['authorization'];
   if (!token) {
@@ -90,6 +92,7 @@ function verifyToken(req, res, next) {
   });
 }
 
+// Get tasks
 app.get('/tasks', verifyToken, async (req, res) => {
   try {
     const tasks = await Task.find({ userId: req.userId });
@@ -100,6 +103,7 @@ app.get('/tasks', verifyToken, async (req, res) => {
   }
 });
 
+// Create a new task
 app.post('/tasks/:userId', verifyToken, async (req, res) => {
   const { task, status, category, deadline, priority } = req.body;
   const userId = req.params.userId;
@@ -126,6 +130,7 @@ app.post('/tasks/:userId', verifyToken, async (req, res) => {
   }
 });
 
+// Update a task
 app.put('/tasks/:id', verifyToken, async (req, res) => {
   const taskId = req.params.id;
   const { task, status, category, deadline, priority } = req.body;
@@ -150,6 +155,7 @@ app.put('/tasks/:id', verifyToken, async (req, res) => {
   }
 });
 
+// Delete a task
 app.delete('/tasks/:id', verifyToken, async (req, res) => {
   const taskId = req.params.id;
 
@@ -164,6 +170,14 @@ app.delete('/tasks/:id', verifyToken, async (req, res) => {
     console.error('Error in /tasks/:id:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
+});
+
+// Serve static files from the React frontend app
+app.use(express.static(path.join(__dirname, '../client/dist')));
+
+// Handle any other requests by returning the React app
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
 app.listen(PORT, () => {
